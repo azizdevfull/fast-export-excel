@@ -1,0 +1,29 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Deployment
+        uses: appleboy/ssh-action@master
+        
+        with:
+          host: ${{ secrets.HOST }} // ip address
+
+          username: ${{ secrets.USERNAME }} // server user
+
+          password: ${{ secrets.PASSWORD }} // server paroli
+
+          script: |
+            cd /srv/fast-export-excel 
+            git pull 
+            php artisan migrate
+            php artisan optimize
